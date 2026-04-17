@@ -1,0 +1,14 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY apps/admin-web/package.json /app/package.json
+COPY apps/admin-web/package-lock.json /app/package-lock.json
+
+RUN npm install
+
+COPY apps/admin-web /app
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]
