@@ -47,12 +47,51 @@ export default async function ProductsPage({
         rows={products}
         emptyText="当前没有商品数据。"
         columns={[
+          {
+            key: "id",
+            title: "ID",
+            render: (row) => (
+              <code style={{ fontSize: 12, whiteSpace: "nowrap" }}>
+                {row.id}
+              </code>
+            ),
+          },
           { key: "external_product_id", title: "External ID", render: (row) => row.external_product_id },
           { key: "title", title: "Title", render: (row) => row.title },
           { key: "category", title: "Category", render: (row) => row.category ?? "-" },
           { key: "price", title: "Price", render: (row) => row.price },
           { key: "delivery_mode", title: "Mode", render: (row) => row.delivery_mode },
           { key: "auto_delivery_enabled", title: "Auto", render: (row) => String(row.auto_delivery_enabled) },
+          {
+            key: "rule_profile_id",
+            title: "Rule ID",
+            render: (row) =>
+              row.rule_profile_id ? (
+                <code style={{ fontSize: 12, whiteSpace: "nowrap" }}>{row.rule_profile_id}</code>
+              ) : (
+                "-"
+              ),
+          },
+          {
+            key: "delivery_template_id",
+            title: "Delivery Template ID",
+            render: (row) =>
+              row.delivery_template_id ? (
+                <code style={{ fontSize: 12, whiteSpace: "nowrap" }}>{row.delivery_template_id}</code>
+              ) : (
+                "-"
+              ),
+          },
+          {
+            key: "faq_template_id",
+            title: "FAQ Template ID",
+            render: (row) =>
+              row.faq_template_id ? (
+                <code style={{ fontSize: 12, whiteSpace: "nowrap" }}>{row.faq_template_id}</code>
+              ) : (
+                "-"
+              ),
+          },
           { key: "status", title: "Status", render: (row) => row.status },
           { key: "actions", title: "Actions", render: (row) => <ProductActions product={row} /> },
         ]}

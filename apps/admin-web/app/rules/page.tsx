@@ -68,6 +68,15 @@ export default async function RulesPage({
         rows={rules}
         emptyText="当前没有规则数据。"
         columns={[
+          {
+            key: "id",
+            title: "ID",
+            render: (row) => (
+              <code style={{ fontSize: 12, whiteSpace: "nowrap" }}>
+                {row.id}
+              </code>
+            ),
+          },
           { key: "name", title: "Name", render: (row) => row.name },
           { key: "scope", title: "Scope", render: (row) => row.scope },
           { key: "trigger_type", title: "Trigger", render: (row) => row.trigger_type },

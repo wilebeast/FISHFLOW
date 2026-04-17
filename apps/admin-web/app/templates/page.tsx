@@ -57,6 +57,15 @@ export default async function TemplatesPage({
         rows={templates}
         emptyText="当前没有模板数据。"
         columns={[
+          {
+            key: "id",
+            title: "ID",
+            render: (row) => (
+              <code style={{ fontSize: 12, whiteSpace: "nowrap" }}>
+                {row.id}
+              </code>
+            ),
+          },
           { key: "name", title: "Name", render: (row) => row.name },
           { key: "template_type", title: "Type", render: (row) => row.template_type },
           { key: "category", title: "Category", render: (row) => row.category ?? "-" },

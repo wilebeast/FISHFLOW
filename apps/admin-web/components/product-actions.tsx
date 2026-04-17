@@ -29,6 +29,9 @@ export function ProductActions({ product }: { product: ProductItem }) {
 
   return (
     <div style={{ display: "grid", gap: 8 }}>
+      <div style={{ fontSize: 12, color: "#735f48" }}>
+        Use IDs from the Rules and Templates pages.
+      </div>
       <button type="button" onClick={() => run(() => toggleAutoDelivery(product.id), "Auto delivery updated")}>
         Toggle Auto Delivery
       </button>
