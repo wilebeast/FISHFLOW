@@ -84,6 +84,8 @@ class MessageProcessor:
         conversation = self.session.get(Conversation, message.conversation_id)
         if conversation is not None:
             conversation.summary = message.content[:280]
+            conversation.last_message_at = message.created_at
+            conversation.unread_count = max(conversation.unread_count, 0) + 1
 
         self.session.flush()
         return message, reply_message, route

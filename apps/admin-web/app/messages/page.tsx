@@ -1,13 +1,34 @@
+import { FilterForm } from "../../components/filter-form";
 import { getMessages } from "../../lib/api";
 import { MessageInjectForm } from "../../components/message-inject-form";
 import { SimpleTable } from "../../components/table";
 
-export default async function MessagesPage() {
-  const messages = await getMessages();
+export default async function MessagesPage({
+  searchParams,
+}: {
+  searchParams?: { limit?: string };
+}) {
+  const messages = await getMessages({ limit: searchParams?.limit ? Number(searchParams.limit) : undefined });
 
   return (
     <>
       <MessageInjectForm />
+      <FilterForm
+        title="Filter Messages"
+        fields={[
+          {
+            name: "limit",
+            label: "Limit",
+            type: "select",
+            defaultValue: searchParams?.limit ?? "50",
+            options: [
+              { label: "20", value: "20" },
+              { label: "50", value: "50" },
+              { label: "100", value: "100" },
+            ],
+          },
+        ]}
+      />
       <SimpleTable
         title="Messages"
         rows={messages}

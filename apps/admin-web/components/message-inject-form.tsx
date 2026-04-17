@@ -39,14 +39,22 @@ export function MessageInjectForm() {
             type="button"
             disabled={busy}
             onClick={() => {
+              if (!externalConversationId.trim()) {
+                setError("External Conversation ID is required");
+                return;
+              }
+              if (!content.trim()) {
+                setError("Content is required");
+                return;
+              }
               setBusy(true);
               setError(null);
               setResult(null);
               startTransition(async () => {
                 try {
                   const response = await injectTestMessage({
-                    external_conversation_id: externalConversationId,
-                    content,
+                    external_conversation_id: externalConversationId.trim(),
+                    content: content.trim(),
                   });
                   setResult(response.detail ?? response.status);
                   router.refresh();

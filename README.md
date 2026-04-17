@@ -2,11 +2,12 @@
 
 FishFlow 是一个面向闲鱼卖家的自动成交中台 MVP。
 
-当前版本已经打通了三个核心闭环：
+当前版本已经打通了 V0.2 的主链路：
 
 - 订单创建与支付后自动发货任务生成
 - 买家消息入库、规则匹配与自动回复记录生成
-- 后台查看订单、消息、发货任务，并执行最小操作
+- 后台管理商品、会话、模板、规则、系统状态
+- 后台可执行最小操作：人工接管、手动发送消息、规则启停、模板启停、发货重试
 
 这不是一个功能完整的商业版，而是一个已经可以本地演示和继续扩展的操作型 MVP。
 
@@ -22,16 +23,26 @@ FishFlow 是一个面向闲鱼卖家的自动成交中台 MVP。
 - 支付后自动创建 `delivery_tasks`
 - 消息入库后自动生成回复记录
 - 管理后台最小页面：
+  - `Products`
+  - `Conversations`
   - `Orders`
   - `Messages`
   - `Deliveries`
+  - `Templates`
+  - `Rules`
+  - `System`
 - 最小集成测试通过
 
 ### 当前可演示操作
 
 - 创建订单
+- 创建商品
 - 标记订单已支付
 - 注入测试消息
+- 会话人工接管 / 解除接管
+- 会话手动发送消息
+- 创建模板与启停模板
+- 创建规则与启停规则
 - 查看自动发货任务详情
 - 对失败任务执行重试
 
@@ -125,7 +136,19 @@ API_BASE_URL=http://127.0.0.1:8000 npm run dev
 
 ## 演示脚本
 
-### 演示 1：消息自动回复链路
+### 演示 1：商品和自动化配置
+
+1. 打开 `Products`
+2. 创建一个新商品
+3. 绑定规则和模板
+4. 切换自动发货开关
+
+预期结果：
+
+- 商品出现在列表中
+- 自动化绑定关系可在后台直接修改
+
+### 演示 2：消息自动回复链路
 
 1. 打开 `Messages`
 2. 输入会话 ID，例如 `conv_demo_001`
@@ -137,7 +160,19 @@ API_BASE_URL=http://127.0.0.1:8000 npm run dev
 - 出现一条买家入站消息
 - 出现一条系统自动生成的 bot 出站消息
 
-### 演示 2：支付后发货链路
+### 演示 3：会话操作链路
+
+1. 打开 `Conversations`
+2. 对会话执行 `Handoff`
+3. 再执行 `Release`
+4. 手动发送一条消息
+
+预期结果：
+
+- 接管状态发生变化
+- 会话时间线会增加一条出站消息
+
+### 演示 4：支付后发货链路
 
 1. 打开 `Orders`
 2. 对未支付订单点击 `Mark Paid`
@@ -164,9 +199,32 @@ API_BASE_URL=http://127.0.0.1:8000 npm run dev
 - `GET /orders/{external_order_id}`
 - `POST /orders/{order_id}/mark-paid`
 
+### 商品
+
+- `GET /products`
+- `POST /products`
+- `GET /products/{id}`
+- `PATCH /products/{id}`
+- `POST /products/{id}/bind-rule`
+- `POST /products/{id}/bind-delivery-template`
+- `POST /products/{id}/bind-faq-template`
+- `POST /products/{id}/toggle-auto-delivery`
+
+### 会话
+
+- `GET /conversations`
+- `GET /conversations/{id}`
+- `GET /conversations/{id}/messages`
+- `POST /conversations/{id}/handoff`
+- `POST /conversations/{id}/release`
+- `POST /conversations/{id}/tags`
+- `POST /conversations/{id}/send`
+
 ### 消息
 
 - `GET /messages`
+- `GET /messages/{id}`
+- `POST /messages/{conversation_id}/send`
 - `POST /events/messages/received`
 
 ### 发货任务
@@ -174,6 +232,28 @@ API_BASE_URL=http://127.0.0.1:8000 npm run dev
 - `GET /deliveries`
 - `GET /deliveries/{task_id}`
 - `POST /deliveries/{task_id}/retry`
+
+### 模板
+
+- `GET /templates`
+- `POST /templates`
+- `GET /templates/{id}`
+- `PATCH /templates/{id}`
+
+### 规则
+
+- `GET /rules`
+- `POST /rules`
+- `GET /rules/{id}`
+- `PATCH /rules/{id}`
+- `POST /rules/{id}/enable`
+- `POST /rules/{id}/disable`
+
+### 系统
+
+- `GET /system/health`
+- `GET /system/queue`
+- `GET /system/errors`
 
 ## 测试
 
@@ -199,6 +279,6 @@ docker compose -f deploy/docker-compose.yml up --build
 
 当前阶段可以描述为：
 
-**本地可演示的操作型 MVP**
+**本地可演示的操作型 V0.2 MVP**
 
-它已经证明核心流程能跑，但还没有进入真实闲鱼联调和商业化可交付阶段。
+它已经证明商品、会话、订单、消息、发货任务、规则、模板这几条核心流程能跑，但还没有进入真实闲鱼联调和商业化可交付阶段。

@@ -20,6 +20,7 @@ def main() -> None:
                 category="digital",
                 price=19.90,
                 delivery_mode="auto",
+                auto_delivery_enabled=True,
             )
             session.add(product)
             session.flush()
@@ -45,8 +46,11 @@ def main() -> None:
                 template_type="delivery",
                 name="默认自动发货模板",
                 owner_type="system",
+                description="系统默认演示发货模板",
+                category="delivery",
                 content="您好，您购买的内容如下：{{delivery_content}}",
                 variables={"delivery_content": "演示资源链接：https://example.com/download/demo"},
+                is_default=True,
             )
             session.add(template)
             session.flush()
@@ -76,6 +80,12 @@ def main() -> None:
                 },
             )
             session.add(rule)
+            session.flush()
+
+        if product.delivery_template_id is None:
+            product.delivery_template_id = template.id
+        if product.rule_profile_id is None:
+            product.rule_profile_id = rule.id
 
         greeting_rule = session.query(Rule).filter_by(name="买家问候自动回复").one_or_none()
         if greeting_rule is None:

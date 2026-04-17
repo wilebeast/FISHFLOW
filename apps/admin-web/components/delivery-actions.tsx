@@ -10,6 +10,7 @@ export function DeliveryActions({ task }: { task: DeliveryItem }) {
   const [expanded, setExpanded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<string | null>(null);
 
   const canRetry = task.status !== "success";
 
@@ -25,9 +26,11 @@ export function DeliveryActions({ task }: { task: DeliveryItem }) {
           onClick={() => {
             setBusy(true);
             setError(null);
+            setResult(null);
             startTransition(async () => {
               try {
                 await retryDelivery(task.id);
+                setResult("Retry queued");
                 router.refresh();
               } catch (err) {
                 setError(err instanceof Error ? err.message : "retry failed");
@@ -63,6 +66,7 @@ export function DeliveryActions({ task }: { task: DeliveryItem }) {
           )}
         </pre>
       ) : null}
+      {result ? <div style={{ color: "#355e3b" }}>{result}</div> : null}
       {error ? <div style={{ color: "#a63a2f" }}>{error}</div> : null}
     </div>
   );

@@ -49,6 +49,7 @@ logs/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+*.tsbuildinfo
 
 node_modules/
 .next/

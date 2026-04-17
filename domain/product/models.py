@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from sqlalchemy import JSON, DateTime, ForeignKey, Numeric, String, Uuid, func
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Numeric, String, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from infrastructure.db.base import Base
@@ -21,6 +21,14 @@ class Product(Base):
     category: Mapped[str | None] = mapped_column(String(64), nullable=True)
     price: Mapped[float] = mapped_column(Numeric(10, 2), default=0)
     delivery_mode: Mapped[str] = mapped_column(String(32), default="auto")
+    delivery_template_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("templates.id"), nullable=True
+    )
+    faq_template_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("templates.id"), nullable=True
+    )
+    rule_profile_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, nullable=True)
+    auto_delivery_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     status: Mapped[str] = mapped_column(String(32), default="active")
     metadata_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

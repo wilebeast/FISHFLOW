@@ -20,9 +20,12 @@ class Template(Base):
         String(32), default=TemplateOwnerType.SYSTEM.value, index=True
     )
     owner_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    category: Mapped[str | None] = mapped_column(String(64), nullable=True)
     content: Mapped[str] = mapped_column(Text)
     variables: Mapped[dict] = mapped_column(JSON, default=dict)
     version: Mapped[int] = mapped_column(Integer, default=1)
+    is_default: Mapped[bool] = mapped_column(Boolean, default=False)
     enabled: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(

@@ -2,9 +2,14 @@ import Link from "next/link";
 
 const items = [
   { href: "/", label: "Overview" },
+  { href: "/products", label: "Products" },
+  { href: "/conversations", label: "Conversations" },
   { href: "/orders", label: "Orders" },
   { href: "/messages", label: "Messages" },
   { href: "/deliveries", label: "Deliveries" },
+  { href: "/templates", label: "Templates" },
+  { href: "/rules", label: "Rules" },
+  { href: "/system", label: "System" },
 ];
 
 export function Nav() {
