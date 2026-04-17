@@ -2,12 +2,12 @@
 
 FishFlow 是一个面向闲鱼卖家的自动成交中台 MVP。
 
-当前版本已经打通了 V0.2 的主链路：
+当前版本已经打通了 V0.3 的主链路：
 
 - 订单创建与支付后自动发货任务生成
 - 买家消息入库、规则匹配与自动回复记录生成
-- 后台管理商品、会话、模板、规则、系统状态
-- 后台可执行最小操作：人工接管、手动发送消息、规则启停、模板启停、发货重试
+- 后台管理账号、库存/卡密池、商品、会话、模板、规则、通知、审计、AI 回复配置
+- 后台可执行最小操作：人工接管、手动发送消息、规则启停、模板启停、发货重试、账号健康检查、库存分配、通知测试、AI 回复测试
 
 这不是一个功能完整的商业版，而是一个已经可以本地演示和继续扩展的操作型 MVP。
 
@@ -23,6 +23,8 @@ FishFlow 是一个面向闲鱼卖家的自动成交中台 MVP。
 - 支付后自动创建 `delivery_tasks`
 - 消息入库后自动生成回复记录
 - 管理后台最小页面：
+  - `Accounts`
+  - `Inventory`
   - `Products`
   - `Conversations`
   - `Orders`
@@ -30,12 +32,17 @@ FishFlow 是一个面向闲鱼卖家的自动成交中台 MVP。
   - `Deliveries`
   - `Templates`
   - `Rules`
+  - `Notifications`
+  - `Audit`
+  - `AI Reply`
   - `System`
 - 最小集成测试通过
 
 ### 当前可演示操作
 
 - 创建订单
+- 创建账号
+- 创建库存项 / 卡密项
 - 创建商品
 - 标记订单已支付
 - 注入测试消息
@@ -43,16 +50,19 @@ FishFlow 是一个面向闲鱼卖家的自动成交中台 MVP。
 - 会话手动发送消息
 - 创建模板与启停模板
 - 创建规则与启停规则
+- 配置通知通道并执行测试
+- 配置 AI 回复并生成测试回复
 - 查看自动发货任务详情
 - 对失败任务执行重试
 
-### 尚未完成
+### 当前 V0.3 仍未完成
 
 - 闲鱼真实协议接入
 - 真实消息发送
-- 商品管理与多账号管理
 - AI 文案中心
 - 权限系统、租户系统、报表系统
+- 真实外部通知发送
+- 真实 LLM 集成与计费
 
 ## 技术栈
 
@@ -136,6 +146,21 @@ API_BASE_URL=http://127.0.0.1:8000 npm run dev
 
 ## 演示脚本
 
+### 演示 0：账号、库存和通知配置
+
+1. 打开 `Accounts`
+2. 创建一个演示账号并执行 `Health Check`
+3. 打开 `Inventory`
+4. 创建一条卡密或链接库存
+5. 打开 `Notifications`
+6. 保存通知配置并执行测试
+
+预期结果：
+
+- 账号会更新最近巡检状态
+- 库存项会进入列表
+- 系统事件会出现一条通知测试记录
+
 ### 演示 1：商品和自动化配置
 
 1. 打开 `Products`
@@ -184,6 +209,18 @@ API_BASE_URL=http://127.0.0.1:8000 npm run dev
 - 新任务出现在发货列表
 - 可查看 `payload_snapshot`
 - 可看到执行结果
+
+### 演示 5：AI 回复配置
+
+1. 打开 `AI Reply`
+2. 保存默认配置
+3. 输入一条买家问题并执行测试
+4. 查看调用日志
+
+预期结果：
+
+- 页面会返回一条演示 AI 回复
+- 日志表会新增一条 AI 调用记录
 
 ## API 概览
 
@@ -255,6 +292,44 @@ API_BASE_URL=http://127.0.0.1:8000 npm run dev
 - `GET /system/queue`
 - `GET /system/errors`
 
+### 账号
+
+- `GET /accounts`
+- `POST /accounts`
+- `GET /accounts/{id}`
+- `PATCH /accounts/{id}`
+- `POST /accounts/{id}/health-check`
+- `POST /accounts/{id}/disable`
+
+### 库存
+
+- `GET /inventory`
+- `POST /inventory`
+- `GET /inventory/{id}`
+- `PATCH /inventory/{id}`
+- `POST /inventory/{id}/allocate`
+- `POST /inventory/{id}/disable`
+
+### 通知
+
+- `GET /notifications/config`
+- `POST /notifications/config`
+- `PATCH /notifications/config/{id}`
+- `POST /notifications/test`
+
+### 审计
+
+- `GET /audit/admin-actions`
+- `GET /audit/system-events`
+
+### AI 回复
+
+- `GET /ai/reply/config`
+- `POST /ai/reply/config`
+- `PATCH /ai/reply/config/{id}`
+- `POST /ai/reply/test`
+- `GET /ai/reply/logs`
+
 ## 测试
 
 ```bash
@@ -279,6 +354,6 @@ docker compose -f deploy/docker-compose.yml up --build
 
 当前阶段可以描述为：
 
-**本地可演示的操作型 V0.2 MVP**
+**本地可演示的操作型 V0.3 MVP**
 
-它已经证明商品、会话、订单、消息、发货任务、规则、模板这几条核心流程能跑，但还没有进入真实闲鱼联调和商业化可交付阶段。
+它已经证明账号、库存、商品、会话、订单、消息、发货任务、规则、模板、通知和 AI 回复配置这几条核心流程能跑，但还没有进入真实闲鱼联调和商业化可交付阶段。

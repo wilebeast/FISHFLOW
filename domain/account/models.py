@@ -19,6 +19,10 @@ class Account(Base):
     login_status: Mapped[str] = mapped_column(String(32), default="active")
     health_status: Mapped[str] = mapped_column(String(32), default="healthy")
     credential_ref: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_check_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    risk_level: Mapped[str] = mapped_column(String(32), default="low")
+    disabled_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()

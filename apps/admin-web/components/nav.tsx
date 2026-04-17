@@ -2,6 +2,8 @@ import Link from "next/link";
 
 const items = [
   { href: "/", label: "Overview" },
+  { href: "/accounts", label: "Accounts" },
+  { href: "/inventory", label: "Inventory" },
   { href: "/products", label: "Products" },
   { href: "/conversations", label: "Conversations" },
   { href: "/orders", label: "Orders" },
@@ -9,6 +11,9 @@ const items = [
   { href: "/deliveries", label: "Deliveries" },
   { href: "/templates", label: "Templates" },
   { href: "/rules", label: "Rules" },
+  { href: "/notifications", label: "Notifications" },
+  { href: "/audit", label: "Audit" },
+  { href: "/ai/reply", label: "AI Reply" },
   { href: "/system", label: "System" },
 ];
 
