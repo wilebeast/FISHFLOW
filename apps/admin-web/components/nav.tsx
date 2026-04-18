@@ -14,6 +14,10 @@ const items = [
   { href: "/notifications", label: "Notifications" },
   { href: "/audit", label: "Audit" },
   { href: "/ai/reply", label: "AI Reply" },
+  { href: "/ai/copy", label: "AI Copy" },
+  { href: "/knowledge", label: "Knowledge" },
+  { href: "/analytics", label: "Analytics" },
+  { href: "/settings", label: "Settings" },
   { href: "/system", label: "System" },
 ];
 

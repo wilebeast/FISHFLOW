@@ -13,6 +13,10 @@ const pages = [
   { href: "/notifications", label: "Notifications", desc: "配置飞书、Webhook 等通知通道并执行测试。" },
   { href: "/audit", label: "Audit", desc: "查看后台操作日志与系统事件。" },
   { href: "/ai/reply", label: "AI Reply", desc: "维护 AI 回复配置并查看调用日志。" },
+  { href: "/ai/copy", label: "AI Copy", desc: "生成商品标题、描述、FAQ 和客服改写文案。" },
+  { href: "/knowledge", label: "Knowledge", desc: "维护商品 FAQ、售前售后知识和启停状态。" },
+  { href: "/analytics", label: "Analytics", desc: "查看消息、接管、发货成功率等概览数据。" },
+  { href: "/settings", label: "Settings", desc: "维护全局配置、导入导出应用设置。" },
   { href: "/system", label: "System", desc: "查看 API、数据库、Redis、Worker 的健康状态。" },
 ];
 
@@ -21,7 +25,7 @@ export default function HomePage() {
     <section>
       <h1 style={{ marginBottom: 12 }}>FishFlow Admin</h1>
       <p style={{ maxWidth: 720, lineHeight: 1.6 }}>
-        当前后台已经覆盖 V0.3 的核心管理面：账号、库存、商品、会话、模板、规则、通知、审计和 AI 回复配置。
+        当前后台已经覆盖 V1.0 的核心管理面：账号、库存、商品、会话、模板、规则、通知、审计、AI 回复、AI 文案、知识库、报表和设置。
       </p>
       <div
         style={{

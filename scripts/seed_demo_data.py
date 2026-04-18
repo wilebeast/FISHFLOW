@@ -1,5 +1,20 @@
 from infrastructure.db.session import SessionLocal
-from infrastructure.db.models import AIReplyConfig, Account, Conversation, InventoryItem, NotificationConfig, Product, Rule, Template
+from datetime import date
+
+from infrastructure.db.models import (
+    AICopyHistory,
+    AIReplyConfig,
+    Account,
+    AnalyticsSnapshot,
+    AppSetting,
+    Conversation,
+    InventoryItem,
+    KnowledgeItem,
+    NotificationConfig,
+    Product,
+    Rule,
+    Template,
+)
 
 
 def main() -> None:
@@ -160,6 +175,48 @@ def main() -> None:
                 },
             )
             session.add(ai_reply_config)
+
+        knowledge_item = session.query(KnowledgeItem).filter_by(question="怎么发货？").one_or_none()
+        if knowledge_item is None:
+            knowledge_item = KnowledgeItem(
+                product_id=product.id,
+                category="faq",
+                question="怎么发货？",
+                answer="付款后系统自动发货，如异常会转人工处理。",
+                tags={"scene": "delivery"},
+                enabled=True,
+            )
+            session.add(knowledge_item)
+
+        analytics_snapshot = session.query(AnalyticsSnapshot).filter_by(snapshot_date=date.today()).one_or_none()
+        if analytics_snapshot is None:
+            analytics_snapshot = AnalyticsSnapshot(
+                snapshot_date=date.today(),
+                message_count=12,
+                auto_reply_count=9,
+                handoff_count=2,
+                delivery_success_count=5,
+                delivery_fail_count=1,
+            )
+            session.add(analytics_snapshot)
+
+        app_setting = session.query(AppSetting).filter_by(key="app.branding").one_or_none()
+        if app_setting is None:
+            app_setting = AppSetting(
+                key="app.branding",
+                value_json={"name": "FishFlow", "mode": "demo", "theme": "sand"},
+            )
+            session.add(app_setting)
+
+        copy_history = session.query(AICopyHistory).filter_by(scene="title").one_or_none()
+        if copy_history is None:
+            copy_history = AICopyHistory(
+                scene="title",
+                input_payload={"product_title": "演示版数字商品"},
+                output_payload={"content": "闲鱼热卖 | 演示版数字商品 | 自动发货"},
+                operator="seed",
+            )
+            session.add(copy_history)
 
         session.commit()
     finally:
