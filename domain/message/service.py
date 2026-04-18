@@ -20,6 +20,12 @@ class MessageService:
         return message
 
     @staticmethod
+    def mark_send_pending(message: Message) -> Message:
+        message.send_status = "pending"
+        message.send_error = None
+        return message
+
+    @staticmethod
     def mark_sent(message: Message) -> Message:
         message.send_status = "sent"
         message.send_error = None

@@ -3,7 +3,7 @@
 import { startTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { accountHealthCheck, disableAccount, type AccountItem } from "../lib/api";
+import { accountHealthCheck, disableAccount, syncAccountOrders, syncAccountProducts, type AccountItem } from "../lib/api";
 
 export function AccountActions({ account }: { account: AccountItem }) {
   const router = useRouter();
@@ -29,6 +29,12 @@ export function AccountActions({ account }: { account: AccountItem }) {
     <div style={{ display: "grid", gap: 8 }}>
       <button type="button" onClick={() => run(() => accountHealthCheck(account.id), "Health checked")}>
         Health Check
+      </button>
+      <button type="button" onClick={() => run(() => syncAccountProducts(account.id), "Product sync queued")}>
+        Sync Products
+      </button>
+      <button type="button" onClick={() => run(() => syncAccountOrders(account.id), "Order sync queued")}>
+        Sync Orders
       </button>
       <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="disable reason" />
       <button

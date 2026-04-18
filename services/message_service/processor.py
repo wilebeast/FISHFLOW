@@ -11,6 +11,7 @@ from domain.message.service import MessageService
 from domain.rule.enums import ActionType
 from domain.rule.repository import RuleRepository
 from services.message_service.router import MessageRouteResult, MessageRouter
+from services.message_service.sender import MessageSender
 
 
 class MessageProcessor:
@@ -20,6 +21,7 @@ class MessageProcessor:
         self.message_service = MessageService()
         self.rule_repository = RuleRepository(session)
         self.router = MessageRouter(self.rule_repository)
+        self.sender = MessageSender(session)
 
     def ingest_message(self, payload: MessageCreate) -> Message:
         if payload.external_message_id:
@@ -65,6 +67,7 @@ class MessageProcessor:
                 direction=MessageDirection.OUTBOUND.value,
                 processed_status=ProcessedStatus.PROCESSED.value,
             )
+            self.message_service.mark_send_pending(reply_message)
             self.message_repository.save(reply_message)
         elif route.action_type == ActionType.REPLY_AI.value:
             reply_content = "已收到消息，稍后为您处理。"
@@ -77,6 +80,7 @@ class MessageProcessor:
                 direction=MessageDirection.OUTBOUND.value,
                 processed_status=ProcessedStatus.PROCESSED.value,
             )
+            self.message_service.mark_send_pending(reply_message)
             self.message_repository.save(reply_message)
 
         self.message_service.mark_processed(message)

@@ -15,4 +15,5 @@ celery_app.conf.imports = (
     "apps.worker.tasks_order",
     "apps.worker.tasks_delivery",
     "apps.worker.tasks_message",
+    "apps.worker.tasks_sync",
 )

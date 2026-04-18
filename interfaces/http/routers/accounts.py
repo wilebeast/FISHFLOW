@@ -3,6 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from apps.worker.tasks_sync import sync_orders, sync_products
 from domain.account.models import Account
 from domain.account.repository import AccountRepository
 from domain.account.schemas import AccountCreate, AccountRead, AccountUpdate, DisableAccountPayload
@@ -92,3 +93,25 @@ def disable_account(account_id: str, payload: DisableAccountPayload, db: Session
     AuditLogger(db).log("disable_account", "account", str(account.id), payload.model_dump())
     db.commit()
     return ActionAccepted(status="ok", detail="account disabled")
+
+
+@router.post("/{account_id}/sync-products", response_model=ActionAccepted)
+def sync_account_products(account_id: str, db: Session = Depends(get_db)) -> ActionAccepted:
+    account = AccountRepository(db).get(account_id)
+    if account is None:
+        raise HTTPException(status_code=404, detail="account not found")
+    sync_products.delay(str(account.id))
+    AuditLogger(db).log("sync_products", "account", str(account.id), {})
+    db.commit()
+    return ActionAccepted(status="ok", detail="product sync queued")
+
+
+@router.post("/{account_id}/sync-orders", response_model=ActionAccepted)
+def sync_account_orders(account_id: str, db: Session = Depends(get_db)) -> ActionAccepted:
+    account = AccountRepository(db).get(account_id)
+    if account is None:
+        raise HTTPException(status_code=404, detail="account not found")
+    sync_orders.delay(str(account.id))
+    AuditLogger(db).log("sync_orders", "account", str(account.id), {})
+    db.commit()
+    return ActionAccepted(status="ok", detail="order sync queued")

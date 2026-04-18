@@ -11,6 +11,16 @@ FishFlow 是一个面向闲鱼卖家的自动成交中台 MVP。
 
 这不是一个功能完整的商业版，而是一个已经可以本地演示和继续扩展的操作型 MVP。
 
+## 真实集成现状
+
+当前版本已经接入一层 `Xianyu Bridge` 抽象，FishFlow 通过桥接服务完成：
+
+- 真实消息发送
+- 商品同步
+- 订单同步
+
+当前仓库还提供了一个本地联调用的 mock bridge，方便先把集成链路跑通，再替换成真实桥接服务。
+
 ## 当前能力
 
 ### 已完成
@@ -109,6 +119,8 @@ cp .env.example .env
 - `REDIS_URL`
 - `CELERY_BROKER_URL`
 - `CELERY_RESULT_BACKEND`
+- `XIANYU_BRIDGE_API_BASE_URL`
+- `XIANYU_BRIDGE_TOKEN`
 
 ### 3. 执行数据库迁移
 
@@ -135,14 +147,27 @@ uvicorn apps.api.main:app --reload
 
 - API: `http://127.0.0.1:8000`
 
-### 6. 启动 Worker
+### 6. 启动 Xianyu Bridge Mock
+
+```bash
+source .venv/bin/activate
+python -m uvicorn apps.xianyu_bridge_mock.main:app --reload --port 8787
+```
+
+如需启用 token 校验，可在 `.env` 中配置：
+
+```env
+XIANYU_BRIDGE_TOKEN=bridge-demo-token
+```
+
+### 7. 启动 Worker
 
 ```bash
 source .venv/bin/activate
 celery -A apps.worker.celery_app.celery_app worker -l info
 ```
 
-### 7. 启动 Admin Web
+### 8. 启动 Admin Web
 
 ```bash
 cd apps/admin-web
@@ -153,6 +178,10 @@ API_BASE_URL=http://127.0.0.1:8000 npm run dev
 页面地址：
 
 - Admin: `http://127.0.0.1:3000`
+
+Bridge 文档见：
+
+- [docs/xianyu-bridge-api.md](docs/xianyu-bridge-api.md)
 
 ## 演示脚本
 
@@ -170,6 +199,19 @@ API_BASE_URL=http://127.0.0.1:8000 npm run dev
 - 账号会更新最近巡检状态
 - 库存项会进入列表
 - 系统事件会出现一条通知测试记录
+
+### 演示 0.5：Xianyu Bridge 同步
+
+1. 打开 `Accounts`
+2. 对演示账号点击 `Sync Products`
+3. 再点击 `Sync Orders`
+4. 打开 `Products` 和 `Orders`
+
+预期结果：
+
+- 商品列表会出现来自 Bridge 的外部商品
+- 订单列表会出现来自 Bridge 的外部订单
+- 当前 mock bridge 默认账号是 `acc_demo_001`
 
 ### 演示 1：商品和自动化配置
 
@@ -206,6 +248,7 @@ API_BASE_URL=http://127.0.0.1:8000 npm run dev
 
 - 接管状态发生变化
 - 会话时间线会增加一条出站消息
+- 如果 Bridge 启动正常，消息会真正走到桥接发送接口
 
 ### 演示 4：支付后发货链路
 

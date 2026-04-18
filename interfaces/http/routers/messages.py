@@ -41,4 +41,8 @@ def get_message(message_id: str, db: Session = Depends(get_db)) -> MessageRead:
 def send_message(conversation_id: str, payload: MessageSendPayload, db: Session = Depends(get_db)) -> ActionAccepted:
     message = MessageSender(db).send_manual(conversation_id, payload.content, payload.reply_to_message_id)
     db.commit()
-    return ActionAccepted(status="ok", detail=f"message sent {message.id}")
+    status = "ok" if message.send_status == "sent" else "failed"
+    detail = f"message {message.send_status or 'processed'} {message.id}"
+    if message.send_error:
+        detail = f"{detail}: {message.send_error}"
+    return ActionAccepted(status=status, detail=detail)

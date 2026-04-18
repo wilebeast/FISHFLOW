@@ -10,3 +10,7 @@ class XianyuOrderAdapter(OrderChannel):
 
     async def get_order_detail(self, account_ref: str, order_ref: str) -> dict:
         return await self.client.get("/orders/detail", params={"account": account_ref, "order": order_ref})
+
+    async def fetch_orders(self, account_ref: str, cursor: str | None = None) -> list[dict]:
+        data = await self.client.get("/orders", params={"account": account_ref, "cursor": cursor})
+        return data.get("items", [])

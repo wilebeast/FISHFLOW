@@ -17,3 +17,13 @@ class OrderChannel(ABC):
     @abstractmethod
     async def get_order_detail(self, account_ref: str, order_ref: str) -> dict:
         raise NotImplementedError
+
+    @abstractmethod
+    async def fetch_orders(self, account_ref: str, cursor: str | None = None) -> list[dict]:
+        raise NotImplementedError
+
+
+class ProductChannel(ABC):
+    @abstractmethod
+    async def fetch_products(self, account_ref: str, cursor: str | None = None) -> list[dict]:
+        raise NotImplementedError
